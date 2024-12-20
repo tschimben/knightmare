@@ -28,6 +28,12 @@ pub trait FromFENString {
         Self: Sized;
 }
 
+/// Serialize stuff to FEN strings
+pub trait ToFENString {
+    /// Serialize [Self] to a FEN string
+    fn to_fen(&self) -> String;
+}
+
 /// Parse FEN characters
 pub trait FromFENChar {
     /// Parses a character in FEN notation to [Self]
@@ -38,4 +44,10 @@ pub trait FromFENChar {
     fn from_fen(fen: char) -> Result<Self, FromFENError>
     where
         Self: Sized;
+}
+
+/// Serialize stuff to a FEN character
+pub trait ToFENChar {
+    /// Serialize [Self] to a FEN character
+    fn to_fen(&self) -> char;
 }
