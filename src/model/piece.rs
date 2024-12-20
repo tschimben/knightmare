@@ -1,5 +1,5 @@
 //! Chess pieces
-use crate::fen::{FromFENChar, FromFENError};
+use crate::fen::{FromFENChar, FromFENError, ToFENChar};
 
 use super::color::Color;
 
@@ -21,6 +21,16 @@ impl FromFENChar for ColoredPiece {
             piece: Piece::from_fen(fen)?,
             color: Color::from_fen(fen)?,
         })
+    }
+}
+
+impl ToFENChar for ColoredPiece {
+    fn to_fen(&self) -> char {
+        if self.color == Color::White {
+            self.piece.to_fen().to_ascii_uppercase()
+        } else {
+            self.piece.to_fen().to_ascii_lowercase()
+        }
     }
 }
 
@@ -48,6 +58,19 @@ impl FromFENChar for Piece {
             'r' => Ok(Piece::Rook),
             'k' => Ok(Piece::King),
             _ => Err(FromFENError::InvalidPlacementSymbol(fen)),
+        }
+    }
+}
+
+impl ToFENChar for Piece {
+    fn to_fen(&self) -> char {
+        match self {
+            Piece::Pawn => 'p',
+            Piece::Rook => 'r',
+            Piece::Knight => 'n',
+            Piece::Bishop => 'b',
+            Piece::Queen => 'q',
+            Piece::King => 'k',
         }
     }
 }

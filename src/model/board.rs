@@ -1,5 +1,5 @@
 //! The chess board
-use crate::fen::{FromFENChar, FromFENError, FromFENString};
+use crate::fen::{FromFENChar, FromFENError, FromFENString, ToFENChar, ToFENString};
 
 use super::piece::ColoredPiece;
 
@@ -57,5 +57,36 @@ impl FromFENString for Board {
         }
 
         Ok(board)
+    }
+}
+
+impl ToFENString for Board {
+    fn to_fen(&self) -> String {
+        let mut ranks: Vec<String> = Vec::new();
+
+        for rank in 0..8 {
+            let mut string = String::new();
+            let mut empty_counter: u8 = 0;
+            for file in 0..8 {
+                match self.squares[rank as usize][file as usize] {
+                    Some(piece) => {
+                        if empty_counter > 0 {
+                            string.push_str(&empty_counter.to_string());
+                            empty_counter = 0;
+                        }
+                        string.push(piece.to_fen());
+                    }
+                    None => {
+                        empty_counter += 1;
+                    }
+                }
+            }
+            if empty_counter > 0 {
+                string.push_str(&empty_counter.to_string());
+            }
+            ranks.push(string);
+        }
+
+        ranks.join("/")
     }
 }

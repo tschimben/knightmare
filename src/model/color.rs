@@ -2,7 +2,7 @@
 use crate::fen::{FromFENChar, FromFENError};
 
 /// The color of player (black or white)
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Color {
     /// The white player / piece
     White,
