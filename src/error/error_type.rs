@@ -18,18 +18,6 @@ impl Display for ErrorType {
     }
 }
 
-impl ErrorType {
-    pub fn get_code(&self) -> u32 {
-        let self_code = unsafe { *(self as *const Self as *const u16) };
-
-        let sub_code: u16 = match self {
-            _ => 0xFFFF,
-        };
-
-        (self_code as u32) << 16 | sub_code as u32
-    }
-}
-
 impl From<io::Error> for ErrorType {
     fn from(value: io::Error) -> Self {
         Self::IO(value)
