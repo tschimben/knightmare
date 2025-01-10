@@ -3,6 +3,7 @@ use knightmare::{
     error::Error,
     fen::{FromFENString, FEN_START},
     game::GameState,
+    piece::BoardSquare,
 };
 
 /// The builder tool for AcaciaLinux
@@ -27,7 +28,7 @@ impl Cli {
 
         println!("Knightmare\n");
 
-        let _game_state = GameState::from_fen(FEN_START).expect("LOPP");
+        let game_state = GameState::from_fen(FEN_START).expect("LOPP");
 
         Ok(0)
     }

@@ -46,7 +46,7 @@ impl FromFENString for Board {
                 // If we can't parse to a number, it can only be a placement
                 None => {
                     let piece = ColoredPiece::from_fen(piece_char)?;
-                    board.squares[rank as usize][file as usize] = Some(piece);
+                    board.squares[file as usize][rank as usize] = Some(piece);
 
                     file += 1;
                     if file > 8 {
@@ -68,7 +68,7 @@ impl ToFENString for Board {
             let mut string = String::new();
             let mut empty_counter: u8 = 0;
             for file in 0..8 {
-                match self.squares[rank as usize][file as usize] {
+                match self.squares[file as usize][rank as usize] {
                     Some(piece) => {
                         if empty_counter > 0 {
                             string.push_str(&empty_counter.to_string());
