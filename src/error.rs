@@ -2,7 +2,7 @@
 //!
 //! # Returning errors
 //! The convention for returning errors depends on
-//! whether the error is foreign or of type  [`VError`].
+//! whether the error is foreign or of type  [`Error`].
 //!
 //! ### Returning a foreign error
 //! Errors that aren't already of type [`Error`] must be
@@ -21,7 +21,7 @@ use std::{collections::LinkedList, fmt::Display};
 mod error_type;
 pub use error_type::*;
 
-/// A error to be passed around the Velocity program
+/// A error to be passed around the Knightmare program
 #[derive(Debug)]
 pub struct Error {
     /// The context of the error
@@ -76,7 +76,7 @@ macro_rules! str {
 /// Trait for marking incoming errors
 pub trait ErrorIn: Into<ErrorType> {}
 
-/// A result that returns a [`VError`]
+/// A result that returns a [`Error`]
 pub type Result<T, E = Error> = core::result::Result<T, E>;
 
 impl<T> ErrorExt<T> for Result<T, Error> {

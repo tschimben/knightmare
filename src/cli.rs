@@ -1,6 +1,9 @@
 use clap::Parser;
-use knightmare::error::Error;
-use log::info;
+use knightmare::{
+    error::Error,
+    fen::{FromFENString, FEN_START},
+    game::GameState,
+};
 
 /// The builder tool for AcaciaLinux
 #[derive(Parser)]
@@ -22,7 +25,9 @@ impl Cli {
         }
         pretty_env_logger::init();
 
-        println!("Knightmare");
+        println!("Knightmare\n");
+
+        let _game_state = GameState::from_fen(FEN_START).expect("LOPP");
 
         Ok(0)
     }
