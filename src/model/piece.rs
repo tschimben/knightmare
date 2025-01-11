@@ -1,7 +1,7 @@
 //! Chess pieces
 use crate::fen::{FromFENChar, FromFENError, ToFENChar};
 
-use super::{board::Board, color::Color};
+use super::{board::Board, color::Color, coordinate::Coordinate};
 
 /// A chess piece that is in some color
 #[derive(Clone, Copy, Debug)]
@@ -12,97 +12,69 @@ pub struct ColoredPiece {
     pub color: Color,
 }
 
-pub struct BoardSquare {
-    pub rank: u8,
-    pub file: u8,
-}
-
-impl BoardSquare {
-    pub fn coordinates(&self) -> (char, char) {
-        let file = match self.file {
-            0 => 'a',
-            1 => 'b',
-            2 => 'c',
-            3 => 'd',
-            4 => 'e',
-            5 => 'f',
-            6 => 'g',
-            7 => 'h',
-            _ => panic!(),
-        };
-        let rank = match self.rank {
-            0 => '1',
-            1 => '2',
-            2 => '3',
-            3 => '4',
-            4 => '5',
-            5 => '6',
-            6 => '7',
-            7 => '8',
-            _ => panic!(),
-        };
-        (file, rank)
-    }
-}
-
-pub trait Move {
-    fn get_all_moves(&self, board: &Board, starting_square: BoardSquare) -> Vec<BoardSquare>;
-}
-
 impl ColoredPiece {
-    pub fn get_all_moves(&self, board: &Board, starting_square: BoardSquare) -> Vec<BoardSquare> {
+    pub fn get_all_moves(&self, board: &Board, starting_square: Coordinate) -> Vec<Coordinate> {
         match self.piece {
             Piece::Pawn => Vec::new(),
             Piece::Rook => {
                 let mut targets = Vec::new();
-                for file in (starting_square.file + 1)..8 {
-                    if let Some(piece) = board.squares[file as usize][starting_square.rank as usize]
-                    {
+
+                // Files positive
+                let mut start = starting_square;
+                while let Some(coordinate) = start.next_file() {
+                    start = coordinate;
+                    if let Some(piece) = board.get(coordinate) {
                         if piece.color != self.color {
-                            targets.push(BoardSquare {
-                                file,
-                                rank: starting_square.rank,
-                            });
-                            break;
+                            targets.push(coordinate);
                         }
+                        break;
+                    } else {
+                        targets.push(coordinate)
                     }
                 }
-                for file in (0..starting_square.file).rev() {
-                    if let Some(piece) = board.squares[file as usize][starting_square.rank as usize]
-                    {
+
+                // Files negative
+                let mut start = starting_square;
+                while let Some(coordinate) = start.prev_file() {
+                    start = coordinate;
+                    if let Some(piece) = board.get(coordinate) {
                         if piece.color != self.color {
-                            targets.push(BoardSquare {
-                                file,
-                                rank: starting_square.rank,
-                            });
-                            break;
+                            targets.push(coordinate);
                         }
+                        break;
+                    } else {
+                        targets.push(coordinate)
                     }
                 }
-                for rank in (starting_square.rank + 1)..8 {
-                    if let Some(piece) = board.squares[starting_square.file as usize][rank as usize]
-                    {
+
+                // Ranks positive
+                let mut start = starting_square;
+                while let Some(coordinate) = start.next_rank() {
+                    start = coordinate;
+                    if let Some(piece) = board.get(coordinate) {
                         if piece.color != self.color {
-                            targets.push(BoardSquare {
-                                file: starting_square.file,
-                                rank,
-                            });
-                            break;
+                            targets.push(coordinate);
                         }
+                        break;
+                    } else {
+                        targets.push(coordinate)
                     }
                 }
-                for rank in (0..starting_square.rank).rev() {
-                    if let Some(piece) = board.squares[starting_square.file as usize][rank as usize]
-                    {
+
+                // Ranks negative
+                let mut start = starting_square;
+                while let Some(coordinate) = start.prev_rank() {
+                    start = coordinate;
+                    if let Some(piece) = board.get(coordinate) {
                         if piece.color != self.color {
-                            targets.push(BoardSquare {
-                                file: starting_square.file,
-                                rank,
-                            });
-                            break;
+                            targets.push(coordinate);
                         }
+                        break;
+                    } else {
+                        targets.push(coordinate)
                     }
                 }
+
                 targets
             }
             Piece::Knight => Vec::new(),
