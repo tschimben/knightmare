@@ -29,6 +29,34 @@ impl File {
             _ => None,
         }
     }
+
+    /// Returns the next File if possible
+    pub fn next(self) -> Option<Self> {
+        match self {
+            Self::FileA => Some(Self::FileB),
+            Self::FileB => Some(Self::FileC),
+            Self::FileC => Some(Self::FileD),
+            Self::FileD => Some(Self::FileE),
+            Self::FileE => Some(Self::FileF),
+            Self::FileF => Some(Self::FileG),
+            Self::FileG => Some(Self::FileH),
+            Self::FileH => None,
+        }
+    }
+
+    /// Returns the previous File if possible
+    pub fn prev(self) -> Option<Self> {
+        match self {
+            Self::FileA => None,
+            Self::FileB => Some(Self::FileA),
+            Self::FileC => Some(Self::FileB),
+            Self::FileD => Some(Self::FileC),
+            Self::FileE => Some(Self::FileD),
+            Self::FileF => Some(Self::FileE),
+            Self::FileG => Some(Self::FileF),
+            Self::FileH => Some(Self::FileG),
+        }
+    }
 }
 
 impl Display for File {
@@ -77,6 +105,34 @@ impl Rank {
             _ => None,
         }
     }
+
+    /// Returns the next rank if possible
+    pub fn next(self) -> Option<Self> {
+        match self {
+            Self::Rank1 => Some(Self::Rank2),
+            Self::Rank2 => Some(Self::Rank3),
+            Self::Rank3 => Some(Self::Rank4),
+            Self::Rank4 => Some(Self::Rank5),
+            Self::Rank5 => Some(Self::Rank6),
+            Self::Rank6 => Some(Self::Rank7),
+            Self::Rank7 => Some(Self::Rank8),
+            Self::Rank8 => None,
+        }
+    }
+
+    /// Returns the previous rank if possible
+    pub fn prev(self) -> Option<Self> {
+        match self {
+            Self::Rank1 => None,
+            Self::Rank2 => Some(Self::Rank1),
+            Self::Rank3 => Some(Self::Rank2),
+            Self::Rank4 => Some(Self::Rank3),
+            Self::Rank5 => Some(Self::Rank4),
+            Self::Rank6 => Some(Self::Rank5),
+            Self::Rank7 => Some(Self::Rank6),
+            Self::Rank8 => Some(Self::Rank7),
+        }
+    }
 }
 
 impl Display for Rank {
@@ -119,6 +175,38 @@ impl Coordinate {
         Some(Self {
             file: File::from_u8(file)?,
             rank: Rank::from_u8(rank)?,
+        })
+    }
+
+    /// Returns the next file if possible
+    pub fn next_file(self) -> Option<Coordinate> {
+        Some(Self {
+            file: self.file.next()?,
+            rank: self.rank,
+        })
+    }
+
+    /// Returns the previous file if possible
+    pub fn prev_file(self) -> Option<Coordinate> {
+        Some(Self {
+            file: self.file.prev()?,
+            rank: self.rank,
+        })
+    }
+
+    /// Returns the next rank if possible
+    pub fn next_rank(self) -> Option<Coordinate> {
+        Some(Self {
+            file: self.file,
+            rank: self.rank.next()?,
+        })
+    }
+
+    /// Returns the previous rank if possible
+    pub fn prev_rank(self) -> Option<Coordinate> {
+        Some(Self {
+            file: self.file,
+            rank: self.rank.prev()?,
         })
     }
 }
