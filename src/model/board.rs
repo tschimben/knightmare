@@ -1,13 +1,61 @@
 //! The chess board
 use crate::fen::{FromFENChar, FromFENError, FromFENString, ToFENChar, ToFENString};
 
-use super::piece::ColoredPiece;
+use super::{coordinate::Coordinate, piece::ColoredPiece};
 
 /// A representation of the chess board
 #[derive(Debug, Default)]
 pub struct Board {
     /// The squares that (can) hold a piece
+    /// indexed by `[file][rank]` starting at `A1`
     pub squares: [[Option<ColoredPiece>; 8]; 8],
+}
+
+impl Board {
+    /// Gets a colored piece at `coord`
+    /// # Arguments
+    /// * `coord` - The coordinate to get the piece from
+    pub fn get(&self, coord: Coordinate) -> Option<ColoredPiece> {
+        self.squares[coord.file as usize][coord.rank as usize]
+    }
+
+    /// Returns a list of occupied fields in file-major form
+    pub fn get_occupied_fields_fm(&self) -> Vec<(Coordinate, ColoredPiece)> {
+        let mut pieces = Vec::new();
+
+        for file in 0..8 {
+            for rank in 0..8 {
+                if let Some(piece) = self.squares[file][rank] {
+                    pieces.push((
+                        Coordinate::from_u8s(file as u8, rank as u8)
+                            .expect("[DEV] Internal File and Rank mishap"),
+                        piece,
+                    ));
+                }
+            }
+        }
+
+        pieces
+    }
+
+    /// Returns a list of occupied fields in rank-major form
+    pub fn get_occupied_fields_rm(&self) -> Vec<(Coordinate, ColoredPiece)> {
+        let mut pieces = Vec::new();
+
+        for rank in 0..8 {
+            for file in 0..8 {
+                if let Some(piece) = self.squares[file][rank] {
+                    pieces.push((
+                        Coordinate::from_u8s(file as u8, rank as u8)
+                            .expect("[DEV] Internal File and Rank mishap"),
+                        piece,
+                    ));
+                }
+            }
+        }
+
+        pieces
+    }
 }
 
 impl FromFENString for Board {
@@ -17,7 +65,7 @@ impl FromFENString for Board {
     {
         let mut board = Self::default();
 
-        let mut rank = 0u8;
+        let mut rank = 7u8;
         let mut file = 0u8;
 
         // Iterate over all piece characters
@@ -25,7 +73,7 @@ impl FromFENString for Board {
             // A '/' indicates a new rank
             if piece_char == '/' {
                 file = 0;
-                rank += 1;
+                rank -= 1;
 
                 // Check for out of range ranks
                 if rank > 8 {
