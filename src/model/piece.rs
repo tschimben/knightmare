@@ -3,6 +3,8 @@ use crate::fen::{FromFENChar, FromFENError, ToFENChar};
 
 use super::{board::Board, color::Color, coordinate::Coordinate};
 
+use std::fmt::{Debug, Display};
+
 /// A chess piece that is in some color
 #[derive(Clone, Copy, Debug)]
 pub struct ColoredPiece {
@@ -10,6 +12,12 @@ pub struct ColoredPiece {
     pub piece: Piece,
     /// The color it's in
     pub color: Color,
+}
+
+impl Display for ColoredPiece {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} {}", self.color, self.piece)
+    }
 }
 
 impl ColoredPiece {
@@ -116,6 +124,21 @@ pub enum Piece {
     Bishop,
     Queen,
     King,
+}
+
+impl Display for Piece {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let string = match self {
+            Self::Pawn => "Pawn",
+            Self::Rook => "Rook",
+            Self::Knight => "Knight",
+            Self::Bishop => "Bishop",
+            Self::Queen => "Queen",
+            Self::King => "King",
+        };
+
+        write!(f, "{string}")
+    }
 }
 
 impl FromFENChar for Piece {

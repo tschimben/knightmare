@@ -1,6 +1,8 @@
 //! Functionality for working with the player colors
 use crate::fen::{FromFENChar, FromFENError};
 
+use std::fmt::Display;
+
 /// The color of player (black or white)
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Color {
@@ -8,6 +10,15 @@ pub enum Color {
     White,
     /// The black player / piece
     Black,
+}
+
+impl Display for Color {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::White => write!(f, "White"),
+            Self::Black => write!(f, "Black"),
+        }
+    }
 }
 
 impl FromFENChar for Color {
