@@ -3,7 +3,6 @@ use knightmare::{
     error::Error,
     fen::{FromFENString, FEN_START},
     game::GameState,
-    piece::BoardSquare,
 };
 
 /// The builder tool for AcaciaLinux
@@ -28,7 +27,18 @@ impl Cli {
 
         println!("Knightmare\n");
 
-        let game_state = GameState::from_fen(FEN_START).expect("LOPP");
+        let game = GameState::from_fen(FEN_START).expect("LOPP");
+
+        for (coordinate, piece) in game.board.get_occupied_fields_rm() {
+            println!(
+                "{piece} @ {coordinate} can move to {:?}",
+                piece
+                    .get_all_moves(&game.board, coordinate)
+                    .iter()
+                    .map(|m| { format!("{m}") })
+                    .collect::<Vec<String>>()
+            )
+        }
 
         Ok(0)
     }
