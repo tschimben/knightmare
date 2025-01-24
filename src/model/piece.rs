@@ -1,7 +1,9 @@
 //! Chess pieces
 use crate::fen::{FromFENChar, FromFENError, ToFENChar};
 
-use super::color::Color;
+use super::{board::Board, color::Color, coordinate::Coordinate};
+
+use std::fmt::{Debug, Display};
 
 /// A chess piece that is in some color
 #[derive(Clone, Copy, Debug)]
@@ -10,6 +12,85 @@ pub struct ColoredPiece {
     pub piece: Piece,
     /// The color it's in
     pub color: Color,
+}
+
+impl Display for ColoredPiece {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} {}", self.color, self.piece)
+    }
+}
+
+impl ColoredPiece {
+    pub fn get_all_moves(&self, board: &Board, starting_square: Coordinate) -> Vec<Coordinate> {
+        match self.piece {
+            Piece::Pawn => Vec::new(),
+            Piece::Rook => {
+                let mut targets = Vec::new();
+
+                // Files positive
+                let mut start = starting_square;
+                while let Some(coordinate) = start.next_file() {
+                    start = coordinate;
+                    if let Some(piece) = board.get(coordinate) {
+                        if piece.color != self.color {
+                            targets.push(coordinate);
+                        }
+                        break;
+                    } else {
+                        targets.push(coordinate)
+                    }
+                }
+
+                // Files negative
+                let mut start = starting_square;
+                while let Some(coordinate) = start.prev_file() {
+                    start = coordinate;
+                    if let Some(piece) = board.get(coordinate) {
+                        if piece.color != self.color {
+                            targets.push(coordinate);
+                        }
+                        break;
+                    } else {
+                        targets.push(coordinate)
+                    }
+                }
+
+                // Ranks positive
+                let mut start = starting_square;
+                while let Some(coordinate) = start.next_rank() {
+                    start = coordinate;
+                    if let Some(piece) = board.get(coordinate) {
+                        if piece.color != self.color {
+                            targets.push(coordinate);
+                        }
+                        break;
+                    } else {
+                        targets.push(coordinate)
+                    }
+                }
+
+                // Ranks negative
+                let mut start = starting_square;
+                while let Some(coordinate) = start.prev_rank() {
+                    start = coordinate;
+                    if let Some(piece) = board.get(coordinate) {
+                        if piece.color != self.color {
+                            targets.push(coordinate);
+                        }
+                        break;
+                    } else {
+                        targets.push(coordinate)
+                    }
+                }
+
+                targets
+            }
+            Piece::Knight => Vec::new(),
+            Piece::Bishop => Vec::new(),
+            Piece::Queen => Vec::new(),
+            Piece::King => Vec::new(),
+        }
+    }
 }
 
 impl FromFENChar for ColoredPiece {
@@ -43,6 +124,21 @@ pub enum Piece {
     Bishop,
     Queen,
     King,
+}
+
+impl Display for Piece {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let string = match self {
+            Self::Pawn => "Pawn",
+            Self::Rook => "Rook",
+            Self::Knight => "Knight",
+            Self::Bishop => "Bishop",
+            Self::Queen => "Queen",
+            Self::King => "King",
+        };
+
+        write!(f, "{string}")
+    }
 }
 
 impl FromFENChar for Piece {
