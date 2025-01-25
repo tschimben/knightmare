@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 /// A file on the chess board (`A`-`H`)
 #[repr(u8)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub enum File {
     FileA = 0,
     FileB = 1,
@@ -62,14 +62,14 @@ impl File {
 impl Display for File {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let c = match self {
-            File::FileA => 'A',
-            File::FileB => 'B',
-            File::FileC => 'C',
-            File::FileD => 'D',
-            File::FileE => 'E',
-            File::FileF => 'F',
-            File::FileG => 'G',
-            File::FileH => 'H',
+            File::FileA => 'a',
+            File::FileB => 'b',
+            File::FileC => 'c',
+            File::FileD => 'd',
+            File::FileE => 'e',
+            File::FileF => 'f',
+            File::FileG => 'g',
+            File::FileH => 'h',
         };
 
         write!(f, "{c}")
@@ -78,7 +78,7 @@ impl Display for File {
 
 /// A rank on the chessboard (`1`-`8`)
 #[repr(u8)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub enum Rank {
     Rank1 = 0,
     Rank2 = 1,
@@ -206,6 +206,34 @@ impl Coordinate {
     pub fn prev_rank(self) -> Option<Coordinate> {
         Some(Self {
             file: self.file,
+            rank: self.rank.prev()?,
+        })
+    }
+
+    pub fn next_rank_next_file(self) -> Option<Coordinate> {
+        Some(Self {
+            file: self.file.next()?,
+            rank: self.rank.next()?,
+        })
+    }
+
+    pub fn next_rank_prev_file(self) -> Option<Coordinate> {
+        Some(Self {
+            file: self.file.prev()?,
+            rank: self.rank.next()?,
+        })
+    }
+
+    pub fn prev_rank_next_file(self) -> Option<Coordinate> {
+        Some(Self {
+            file: self.file.next()?,
+            rank: self.rank.prev()?,
+        })
+    }
+
+    pub fn prev_rank_prev_file(self) -> Option<Coordinate> {
+        Some(Self {
+            file: self.file.prev()?,
             rank: self.rank.prev()?,
         })
     }
